@@ -1,0 +1,20 @@
+GET http://localhost:5000/124
+
+###
+POST http://localhost:5000/auth/register
+Content-Type: application/json
+
+{
+  "username": "Testuser",
+  "email": "test@gmail.com",
+  "password": "hashedpw"
+}
+###
+POST http://localhost:5000/auth/login
+###
+POST http://localhost:5000/auth/refresh-token
+###
+DELETE  http://localhost:5000/auth/logout
+
+###
+GET http://localhost:5000/users/4
