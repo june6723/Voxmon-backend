@@ -3,10 +3,10 @@ import mysql from 'mysql';
 const mysqlConnection = {
   init: function () {
     return mysql.createConnection({
-      host: process.env.MYSQL_HOST || '132.226.227.186',
-      user: process.env.MYSQL_USER || 'voxmon',
-      password: process.env.MYSQL_PASS || 'ssacsfd4Vox!',
-      database: process.env.MYSQL_DB || 'voxmondb',
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
     });
   },
   open: function (conn) {
