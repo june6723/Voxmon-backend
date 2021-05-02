@@ -2,11 +2,13 @@ import createError from 'http-errors';
 import mysql from '../config/mysql.js';
 import bcrypt from 'bcrypt';
 import { signAccessToken } from '../utils/jwt_utils.js';
+import { registerSchema } from '../validation/User.validation.js';
 
-export const registerUser = (req, res, next) => {
+export const registerUser = async (req, res, next) => {
   const connection = mysql.init();
   mysql.open(connection);
   try {
+    const checkValid = await registerSchema.validateAsync(req.body);
     const { email, password, username } = req.body;
     if (!email || !password || !username) throw createError.BadRequest();
 
