@@ -2,13 +2,13 @@ import createError from 'http-errors';
 import mysql from '../config/mysql.js';
 import bcrypt from 'bcrypt';
 import { signAccessToken } from '../utils/jwt_utils.js';
+import { registerSchema, loginSchema } from '../validation/User.validation.js';
 
-export const registerUser = (req, res, next) => {
+export const registerUser = async (req, res, next) => {
   const connection = mysql.init();
   mysql.open(connection);
   try {
-    const { email, password, username } = req.body;
-    if (!email || !password || !username) throw createError.BadRequest();
+    const { email, password, username } = await registerSchema.validateAsync(req.body);
 
     const searchQuery = 'SELECT email,username from User WHERE email=? or username=?';
     const searchParam = [email, username];
@@ -22,7 +22,7 @@ export const registerUser = (req, res, next) => {
         }
         else {
           mysql.close(connection);
-          email.toLowerCase() === results[0].email.toLowerCase() ? 
+          email === results[0].email ? 
             next(createError.Conflict(`${email} is already exists`)) : 
             next(createError.Conflict(`${username} is already exists`));
         }
@@ -41,6 +41,41 @@ export const registerUser = (req, res, next) => {
     });
   } catch (error) {
     mysql.close(connection);
+    if (error.isJoi === true) error.status = 422; // unprocessible entity
     next(error);
   } 
+};
+
+export const logIn = async (req, res, next) => {
+  const connection = mysql.init();
+  mysql.open(connection);
+  try {
+    const { email, password } = await loginSchema.validateAsync(req.body);
+
+    const query = 'SELECT id, email, password from User WHERE email=?';
+    const param = [email];
+    connection.query(query, param, async (err, result) => {
+      if(err) next(err);
+      if(result.length === 0) {
+        mysql.close(connection);
+        next(createError.NotFound("Username/password not valid."));
+      }
+      else {
+        const checkPassword = await bcrypt.compare(password, result[0].password);
+        if (!checkPassword) {
+          mysql.close(connection);
+          next(createError.Unauthorized('Username/password not valid.'));
+        }
+        else {
+          const accessToken = await signAccessToken(result[0].id.toString());
+          mysql.close(connection);
+          res.send({ accessToken });
+        }
+      }
+    })
+  } catch (error) {
+    mysql.close(connection);
+    if (error.isJoi === true) return next(createError.BadRequest("Invalid input"));
+    next(error);
+  }
 }
