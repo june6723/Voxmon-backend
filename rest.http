@@ -1,16 +1,23 @@
-GET http://localhost:5000/124
+GET http://localhost:5000
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTk5NDUyMTYsImV4cCI6MTYxOTk0ODgxNiwiYXVkIjoiOSIsImlzcyI6InlvdXJkb21haW4uY29tIn0.M3nYXDfRXKpRBvVZ07oXstZDDNM7VlEQh7msb_PymcU
 
 ###
 POST http://localhost:5000/auth/register
 Content-Type: application/json
 
 {
-  "username": "Testuser",
-  "email": "test@gmail.com",
+  "username": "Test user",
+  "email": "Test@gmail.com",
   "password": "hashedpw"
 }
 ###
 POST http://localhost:5000/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@gmail.com",
+  "password": "hashedpw"
+}
 ###
 POST http://localhost:5000/auth/refresh-token
 ###
