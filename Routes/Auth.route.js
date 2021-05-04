@@ -1,15 +1,12 @@
 import express from 'express';
-import { logIn, registerUser } from '../controller/Auth.controller.js';
+import { logIn, logOut, registerUser, signNewToken } from '../controller/Auth.controller.js';
+import verifyAccessToken from '../middleware/Auth.middleware.js';
 
 const router = express.Router();
 
 router.post('/register', registerUser)
 router.post('/login', logIn)
-router.post('/refresh-token', async (req, res, next) => {
-  res.send('refresh token route')
-})
-router.delete('/logout', async (req, res, next) => {
-  res.send('logout route')
-})
+router.post('/refresh-token', signNewToken)
+router.post('/logout', logOut)
 
 export default router;
