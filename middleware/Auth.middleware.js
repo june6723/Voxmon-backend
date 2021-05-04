@@ -7,9 +7,11 @@ const verifyAccessToken = (req, res, next) => {
   const token = authHeader.split(" ")[1];
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
-    if (err) {
-      return next(createError.Unauthorized())
+    if(err) {
+      const message = err.name === 'JsonWebTokenError' ? 'Unauthorized' : err.message;
+      return next(createError.Unauthorized(message));
     }
+  
     req.payload = payload;
     next();
   });

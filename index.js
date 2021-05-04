@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routing
 app.use('/auth', authRoute);
-app.use("/users", usersRoute);
+app.use('/users', usersRoute);
 
 app.get('/', (req, res) => {
   res.send('Hello to Voxmon API!');

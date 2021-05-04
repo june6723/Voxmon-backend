@@ -1,8 +1,9 @@
 import createError from 'http-errors';
 import mysql from '../config/mysql.js';
 import bcrypt from 'bcrypt';
-import { signAccessToken } from '../utils/jwt_utils.js';
+import { signAccessToken, signRefreshToken, verfiyRefreshToken } from '../utils/jwt_utils.js';
 import { registerSchema, loginSchema } from '../validation/User.validation.js';
+import client from '../config/redis.js'
 
 export const registerUser = async (req, res, next) => {
   const connection = mysql.init();
@@ -68,8 +69,9 @@ export const logIn = async (req, res, next) => {
         }
         else {
           const accessToken = await signAccessToken(result[0].id.toString());
+          const refreshToken = await signRefreshToken(result[0].id.toString())
           mysql.close(connection);
-          res.send({ accessToken });
+          res.send({ accessToken, refreshToken });
         }
       }
     })
@@ -77,5 +79,37 @@ export const logIn = async (req, res, next) => {
     mysql.close(connection);
     if (error.isJoi === true) return next(createError.BadRequest("Invalid input"));
     next(error);
+  }
+}
+
+export const signNewToken = async (req, res, next) => {
+  try {
+    const { refreshToken } = req.body;
+    if (!refreshToken) throw createError.BadRequest();
+    const userId = await verfiyRefreshToken(refreshToken);
+
+    const accessToken = await signAccessToken(userId);
+    const newRefreshToken = await signRefreshToken(userId);
+    res.send({ accessToken, refreshToken: newRefreshToken });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export const logOut = async (req, res, next) => {
+  try {
+    const { refreshToken } = req.body
+    if (!refreshToken) throw createError.BadRequest()
+    const userId = await verfiyRefreshToken(refreshToken)
+    client.DEL(userId, (err, value) => {
+      if (err) {
+        console.log(err.message)
+        throw createError.InternalServerError()
+      }
+      console.log(value)
+      res.sendStatus(204)
+    })
+  } catch (error) {
+    next(error)
   }
 }
