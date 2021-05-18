@@ -12,7 +12,7 @@ const verifyAccessToken = (req, res, next) => {
       return next(createError.Unauthorized(message));
     }
   
-    req.payload = payload;
+    req.userId = payload.aud;
     next();
   });
 };

@@ -6,8 +6,8 @@ POST http://localhost:5000/auth/register
 Content-Type: application/json
 
 {
-  "username": "Test user",
-  "email": "Test@gmail.com",
+  "username": "testuser2",
+  "email": "Test2@gmail.com",
   "password": "hashedpw"
 }
 ###
@@ -15,7 +15,7 @@ POST http://localhost:5000/auth/login
 Content-Type: application/json
 
 {
-  "email": "test@gmail.com",
+  "email": "test2@gmail.com",
   "password": "hashedpw"
 }
 ###
@@ -34,4 +34,15 @@ Content-Type: application/json
   "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MjAwMzI4NjYsImV4cCI6MTY1MTU5MDQ2NiwiYXVkIjoiOSIsImlzcyI6InlvdXJkb21haW4uY29tIn0.ouFuOBI5v5TSXQSaWQWkv6-goEeKI_tSGypgtVCWxfk"
 }
 ###
-GET http://localhost:5000/users/4
+GET http://localhost:5000/users/find?cmd=username
+
+###
+GET http://localhost:5000/users/searching/test
+
+###
+POST http://localhost:5000/users/friend-req/11
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MjEzMjEwNzMsImV4cCI6MTYyMTMyMjg3MywiYXVkIjoiOSIsImlzcyI6InlvdXJkb21haW4uY29tIn0.bAdoaGBmucwpL7iJSjprsVTFMMdQHYYbVRcU6zQCD0w
+
+###
+POST http://localhost:5000/users/friend-acc/9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MjEzMjExMDAsImV4cCI6MTYyMTMyMjkwMCwiYXVkIjoiMTEiLCJpc3MiOiJ5b3VyZG9tYWluLmNvbSJ9.ItOGuY9aPqfqifY18MDn4ALnXHEpA_OYUPwp49iOTMo
