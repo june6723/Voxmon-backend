@@ -4,6 +4,7 @@ import createError from 'http-errors';
 import dotenv from 'dotenv';
 import usersRoute from './Routes/User.route.js';
 import authRoute from './Routes/Auth.route.js';
+import cors from 'cors'
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ app.use(morgan('dev'));
 // Body Parser Middleware
 app.use(express.json({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 // Routing
 app.use('/auth', authRoute);
